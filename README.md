@@ -19,7 +19,8 @@ Compared to [the original](https://github.com/abcdeab/CuteMold), this has no cap
 
 ### How to build
 
-After cloning, the usual `cargo build` should suffice. Only tested on Linux so far.
+After cloning, the usual `cargo build --release` should suffice. Only tested on Linux so far.
+Benchmark is available using `cargo bench`.
 
 ### But why?
 
