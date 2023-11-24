@@ -5,13 +5,13 @@ use criterion::{criterion_group, criterion_main, Criterion};
 fn bench_simulation(c: &mut Criterion) {
     const GRID_X: usize = 200;
     const GRID_Y: usize = 200;
-    const STEPS: usize = 500;
+    const STEPS: usize = 1000;
 
     let mut s = rustymold::Simulation::new(GRID_X, GRID_Y, 16);
 
     let mut group = c.benchmark_group("benchmark of Simulation.update()");
     group.sample_size(30);
-    group.measurement_time(Duration::from_secs(30));
+    group.measurement_time(Duration::from_secs(60));
     group.bench_function(format!("{STEPS} update()s on {GRID_X}x{GRID_Y} grid"), |b| {
         b.iter(|| {
             // seed the RNG

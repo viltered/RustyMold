@@ -145,9 +145,9 @@ impl Simulation {
     }
 
     pub fn clear(&mut self) {
-        for x in 0..self.grid.len() {
-            for y in 0..self.grid[x].len() {
-                self.grid[x][y] = Cell::Empty;
+        for row in self.grid.iter_mut() {
+            for cell in row.iter_mut() {
+                *cell = Cell::Empty;
             }
         }
     }
@@ -285,13 +285,12 @@ impl Simulation {
     }
 
     /// Render the state of the simulation into a buffer.
-    pub fn render(&self, buffer: &mut Vec<u32>, window_x: usize, window_y: usize) {
+    pub fn render(&self, buffer: &mut Vec<u32>, buffer_size: (usize, usize), camera_offset: (usize, usize), zoom: usize) {
         let mut buffer_index = 0;
-        for y in 0..window_y {
-            for x in 0..window_x {
-                // todo: pan/zoom
-                let x_grid = std::cmp::min(x, window_x);
-                let y_grid = std::cmp::min(y, window_y);
+        for y in 0..buffer_size.1 {
+            for x in 0..buffer_size.0 {
+
+                let (x_grid, y_grid) = self.pixel_to_grid_coords(x, y, camera_offset, zoom);
 
                 match &self.grid[x_grid][y_grid] {
                     Cell::Empty => {
@@ -309,5 +308,13 @@ impl Simulation {
                 buffer_index += 1;
             }
         }
+    }
+
+    /// convert a pixel location of the screen buffer to grid coordinates
+    pub fn pixel_to_grid_coords(&self, x: usize, y: usize, camera_offset: (usize, usize), zoom: usize) -> (usize, usize) {
+        (
+            ((x + camera_offset.0) / zoom) % self.size_x,
+            ((y + camera_offset.1) / zoom) % self.size_y
+        )
     }
 }
