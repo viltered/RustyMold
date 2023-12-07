@@ -34,9 +34,17 @@ Compared to [the original](https://github.com/abcdeab/CuteMold) this implementat
 
 ### How to build
 
-After cloning, the usual `cargo build --release` should suffice. Only tested on Linux so far.
-Benchmark is available using `cargo bench`.
+After cloning, the usual `cargo build --release` should suffice. Only tested on Linux so far. Benchmark is available using `cargo bench`.
 
 ### But why?
 
 To learn Rust.
+
+### Screenshots
+
+![mold1](https://github.com/viltered/RustyMold/assets/10100093/98931ed9-a310-4c3a-8d8e-cbb5a9647432)
+![mold2](https://github.com/viltered/RustyMold/assets/10100093/945b1f09-b81e-4ad1-90f1-eecfe3d87b0e)
+![mold3](https://github.com/viltered/RustyMold/assets/10100093/06c3aec5-1b80-4dc7-8e12-7e2cdfd2f076)
+![mold4](https://github.com/viltered/RustyMold/assets/10100093/1fd43404-08ef-4513-9a21-d586168caea8)
+![mold5](https://github.com/viltered/RustyMold/assets/10100093/98973dc8-64bc-4760-a853-9e0f78272dec)
+
