@@ -2,7 +2,6 @@ use std::cell::RefCell;
 use std::rc::Rc;
 
 use arrayvec::ArrayVec;
-use fastrand;
 
 /// number of genes in each genome
 const GENOME_SIZE: usize = 100;
@@ -70,13 +69,13 @@ impl Genome {
     fn make_mutation(&self) -> Genome {
         let mut new_genome = self.clone();
         if fastrand::f32() < MUTATION_CHANCE {
-            new_genome.color = (10 + fastrand::u32(0..236) << 16)
-                | (10 + fastrand::u32(0..236) << 8)
+            new_genome.color = ((10 + fastrand::u32(0..236)) << 16)
+                | ((10 + fastrand::u32(0..236)) << 8)
                 | (10 + fastrand::u32(0..236));
             let mutation_location = fastrand::usize(0..(GENOME_SIZE * 3));
             new_genome.genes[mutation_location] = generate_gene();
         }
-        return new_genome;
+        new_genome
     }
 
     /// Randomly generate a new genome.
@@ -84,8 +83,8 @@ impl Genome {
         let mut genome = Self {
             genes: [0; GENOME_SIZE * 3],
 
-            color: (10 + fastrand::u32(0..236) << 16)
-                | (10 + fastrand::u32(0..236) << 8)
+            color: ((10 + fastrand::u32(0..236)) << 16)
+                | ((10 + fastrand::u32(0..236)) << 8)
                 | (10 + fastrand::u32(0..236)),
         };
         for gene in genome.genes.iter_mut() {
@@ -97,7 +96,7 @@ impl Genome {
 
 /// Full simulation state.
 pub struct Simulation {
-    energy_light: i32,
+    pub energy_light: i32,
     grid: Vec<Vec<Cell>>,
     size_x: usize,
     size_y: usize,
@@ -106,10 +105,10 @@ pub struct Simulation {
 impl Simulation {
     pub fn new(size_x: usize, size_y: usize, energy_light: i32) -> Self {
         let mut s = Simulation {
-            energy_light: energy_light,
+            energy_light,
             grid: Vec::new(),
-            size_x: size_x,
-            size_y: size_y,
+            size_x,
+            size_y,
         };
         for _ in 0..size_x {
             let mut v = Vec::new();
@@ -271,10 +270,7 @@ impl Simulation {
         for (dx, dy) in offsets.iter() {
             let n = &self.grid[(x + dx) % self.size_x][(y + dy) % self.size_y];
             if let Cell::MoldPart { mold, .. } | Cell::Spore { mold, .. } = n {
-                if neighbors
-                    .iter()
-                    .all(|neighbor| !Rc::ptr_eq(&neighbor, mold))
-                {
+                if neighbors.iter().all(|neighbor| !Rc::ptr_eq(neighbor, mold)) {
                     neighbors.push(mold.clone());
                 }
             }
@@ -285,11 +281,16 @@ impl Simulation {
     }
 
     /// Render the state of the simulation into a buffer.
-    pub fn render(&self, buffer: &mut Vec<u32>, buffer_size: (usize, usize), camera_offset: (usize, usize), zoom: usize) {
+    pub fn render(
+        &self,
+        buffer: &mut [u32],
+        buffer_size: (usize, usize),
+        camera_offset: (usize, usize),
+        zoom: usize,
+    ) {
         let mut buffer_index = 0;
         for y in 0..buffer_size.1 {
             for x in 0..buffer_size.0 {
-
                 let (x_grid, y_grid) = self.pixel_to_grid_coords(x, y, camera_offset, zoom);
 
                 match &self.grid[x_grid][y_grid] {
@@ -311,10 +312,16 @@ impl Simulation {
     }
 
     /// convert a pixel location of the screen buffer to grid coordinates
-    pub fn pixel_to_grid_coords(&self, x: usize, y: usize, camera_offset: (usize, usize), zoom: usize) -> (usize, usize) {
+    pub fn pixel_to_grid_coords(
+        &self,
+        x: usize,
+        y: usize,
+        camera_offset: (usize, usize),
+        zoom: usize,
+    ) -> (usize, usize) {
         (
             ((x + camera_offset.0) / zoom) % self.size_x,
-            ((y + camera_offset.1) / zoom) % self.size_y
+            ((y + camera_offset.1) / zoom) % self.size_y,
         )
     }
 }
